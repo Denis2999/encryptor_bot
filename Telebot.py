@@ -135,7 +135,6 @@ def get_file_messages(message):
     file_info = bot.get_file(document_id)
     file = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(API_TOKEN, file_info.file_path))
     print(file)
-    print(message.document)
     # document_id = message.document.file_id
     # file_info = bot.get_file(document_id)
     bot.send_message(message.chat.id, "document_id", reply_markup=keyboard1)
