@@ -1,6 +1,9 @@
 import telebot
+import requests
 
-bot = telebot.TeleBot('1549432801:AAGWmNkchUICa8GIF64kDSCb-L7YpMeyeRg')
+API_TOKEN = '1549432801:AAGWmNkchUICa8GIF64kDSCb-L7YpMeyeRg'
+
+bot = telebot.TeleBot(API_TOKEN)
 keyboard1 = telebot.types.ReplyKeyboardMarkup(True, True)
 keyboard1.row('/decoding_text', '/decoding_file')
 
@@ -8,6 +11,21 @@ keyboard1.row('/decoding_text', '/decoding_file')
 @bot.message_handler(commands=['start'])
 def start_message(message):
     bot.send_message(message.chat.id, 'Hello, send message or file!', reply_markup=keyboard1)
+
+
+@bot.message_handler(commands=['help'])
+def start_message(message):
+    bot.send_message(message.chat.id, """\
+Bot Commands:
+[01] Start
+/start
+[02] Help
+/help
+[03] Decoding text
+/decoding_text
+[04] Decoding file
+/decoding_file
+""")
 
 
 @bot.message_handler(commands=['decoding_text'])
@@ -115,8 +133,10 @@ def get_text_messages(message):
 def get_file_messages(message):
     document_id = message.document.file_id
     file_info = bot.get_file(document_id)
-    # urllib.request.urlretrieve(f'http://api.telegram.org/file/bot{config.token}/{file_info.file_path}',
-    #                            file_info.file_path)
+    file = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(API_TOKEN, file_info.file_path))
+    print(file)
+    # document_id = message.document.file_id
+    # file_info = bot.get_file(document_id)
     bot.send_message(message.chat.id, "document_id", reply_markup=keyboard1)
 
 
