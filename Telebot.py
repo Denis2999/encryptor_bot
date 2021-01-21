@@ -83,7 +83,7 @@ def get_enctext_step(message):
 
 
 @bot.message_handler(content_types=['text'])
-def get_text_messages(message):
+def get_text_message(message):
     def crypto(text="Sometext"):
         list_text = list(text.upper())
         number_text = ""
@@ -129,15 +129,30 @@ def get_text_messages(message):
     bot.send_message(message.chat.id, encoder_word, reply_markup=keyboard1)
 
 
-@bot.message_handler(content_types=['document', 'photo'])
-def get_file_messages(message):
-    document_id = message.document.file_id
-    file_info = bot.get_file(document_id)
-    file = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(API_TOKEN, file_info.file_path))
-    print(file)
-    # document_id = message.document.file_id
-    # file_info = bot.get_file(document_id)
-    bot.send_message(message.chat.id, "document_id", reply_markup=keyboard1)
+@bot.message_handler(content_types=['document'])
+def get_file_message(message):
+    file_name = message.document.file_name
+    file_id = message.document.file_name
+    file_id_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_id_info.file_path)
+
+    src = file_name
+    print(src)
+    with open(src, 'wb') as new_file:
+        new_file.write(downloaded_file)
+
+
+@bot.message_handler(content_types=['photo'])
+def get_photo_message(message):
+    print('message.photo =', message.photo)
+    fileID = message.photo[-1].file_id
+    print('fileID =', fileID)
+    file_info = bot.get_file(fileID)
+    print('file.file_path =', file_info.file_path)
+    downloaded_file = bot.download_file(file_info.file_path)
+
+    with open("image.jpg", 'wb') as new_file:
+        new_file.write(downloaded_file)
 
 
 bot.polling(none_stop=True, interval=0)
