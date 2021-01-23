@@ -1,5 +1,5 @@
 import telebot
-import requests
+from cryptography.fernet import Fernet
 
 API_TOKEN = '1549432801:AAGWmNkchUICa8GIF64kDSCb-L7YpMeyeRg'
 
@@ -30,7 +30,7 @@ Bot Commands:
 
 @bot.message_handler(commands=['decoding_text'])
 def send_enctext_step(message):
-    msg = bot.reply_to(message, "Send me text, you would like encoding")
+    msg = bot.reply_to(message, "Send me text, you would like decrypt")
     bot.register_next_step_handler(msg, get_enctext_step)
 
 
@@ -80,6 +80,59 @@ def get_enctext_step(message):
         decoder_word = decoder_word + alphabet[i][j]
 
     bot.send_message(message.chat.id, decoder_word, reply_markup=keyboard1)
+
+
+@bot.message_handler(commands=['decoding_file'])
+def send_encfile_step(message):
+    msg = bot.reply_to(message, "Send me file, you would like decrypt")
+    bot.register_next_step_handler(msg, get_encfile_step)
+
+
+def get_encfile_step(message):
+    file_name = message.document.file_name
+    file_id = message.document.file_name
+    file_id_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_id_info.file_path)
+
+    src = file_name
+    with open("C:\Python_telegram_bot\Encrypted_files\ " + src, 'wb') as new_file:
+        new_file.write(downloaded_file)
+
+    msg = bot.send_message(message.chat.id, 'Send me key, please')
+    bot.register_next_step_handler(msg, get_key_step)
+
+    file_source = "C:\Python_telegram_bot\Encrypted_files\ " + src
+    return file_source
+
+
+def get_key_step(message):
+    file_name = message.document.file_name
+    file_id = message.document.file_name
+    file_id_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_id_info.file_path)
+
+    with open("C:\Python_telegram_bot\Encrypted_files\ " + 'mykey.key', 'wb') as new_file:
+        new_file.write(downloaded_file)
+
+    file_decrypt(file_source)
+
+    bot.send_document(message.chat.id, open(get_encfile_step(message), 'rb'))
+
+
+def file_decrypt(File_name):
+    with open("C:\Python_telegram_bot\Encrypted_files\ " + 'mykey.key', 'rb') as mykey:
+        key = mykey.read()
+    print(key)
+    print("File_name ", File_name)
+
+    f = Fernet(key)
+    with open(File_name, 'rb') as encrypted_file:
+        encrypted = encrypted_file.read()
+
+    decrypted = f.decrypt(encrypted)
+
+    with open(File_name, 'wb') as decrypted_file:
+        decrypted_file.write(decrypted)
 
 
 @bot.message_handler(content_types=['text'])
@@ -137,9 +190,14 @@ def get_file_message(message):
     downloaded_file = bot.download_file(file_id_info.file_path)
 
     src = file_name
-    print(src)
-    with open(src, 'wb') as new_file:
+    with open("C:\Python_telegram_bot\Downloaded_files\ " + src, 'wb') as new_file:
         new_file.write(downloaded_file)
+
+    file_encrypt(src)
+
+    bot.send_document(message.chat.id, open("C:\Python_telegram_bot\Downloaded_files\ " + src, 'rb'))
+    bot.send_document(message.chat.id, open("C:\Python_telegram_bot\Downloaded_files\ " + 'mykey.key', 'rb'),
+                      reply_markup=keyboard1)
 
 
 @bot.message_handler(content_types=['photo'])
@@ -151,8 +209,32 @@ def get_photo_message(message):
     print('file.file_path =', file_info.file_path)
     downloaded_file = bot.download_file(file_info.file_path)
 
-    with open("image.jpg", 'wb') as new_file:
+    src = "image.jpg"
+    with open("C:\Python_telegram_bot\Downloaded_files\ " + src, 'wb') as new_file:
         new_file.write(downloaded_file)
+
+    file_encrypt(src)
+
+    bot.send_document(message.chat.id, open("C:\Python_telegram_bot\Downloaded_files\ " + src, 'rb'))
+    bot.send_document(message.chat.id, open("C:\Python_telegram_bot\Downloaded_files\ " + 'mykey.key', 'rb'),
+                      reply_markup=keyboard1)
+
+
+def file_encrypt(File_name):
+    key = Fernet.generate_key()
+
+    with open("C:\Python_telegram_bot\Downloaded_files\ " + 'mykey.key', 'wb') as mykey:
+        mykey.write(key)
+    with open("C:\Python_telegram_bot\Downloaded_files\ " + 'mykey.key', 'rb') as mykey:
+        key = mykey.read()
+    print("key is ", key)
+
+    f = Fernet(key)
+    with open("C:\Python_telegram_bot\Downloaded_files\ " + File_name, 'rb') as original_file:
+        original = original_file.read()
+    encrypted = f.encrypt(original)
+    with open("C:\Python_telegram_bot\Downloaded_files\ " + File_name, 'wb') as encrypted_file:
+        encrypted_file.write(encrypted)
 
 
 bot.polling(none_stop=True, interval=0)
