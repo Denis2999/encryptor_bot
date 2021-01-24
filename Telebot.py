@@ -84,25 +84,8 @@ def get_enctext_step(message):
 
 @bot.message_handler(commands=['decoding_file'])
 def send_encfile_step(message):
-    msg = bot.reply_to(message, "Send me file, you would like decrypt")
-    bot.register_next_step_handler(msg, get_encfile_step)
-
-
-def get_encfile_step(message):
-    file_name = message.document.file_name
-    file_id = message.document.file_name
-    file_id_info = bot.get_file(message.document.file_id)
-    downloaded_file = bot.download_file(file_id_info.file_path)
-
-    src = file_name
-    with open("C:\Python_telegram_bot\Encrypted_files\ " + src, 'wb') as new_file:
-        new_file.write(downloaded_file)
-
-    msg = bot.send_message(message.chat.id, 'Send me key, please')
+    msg = bot.reply_to(message, 'Send me key, please')
     bot.register_next_step_handler(msg, get_key_step)
-
-    file_source = "C:\Python_telegram_bot\Encrypted_files\ " + src
-    return file_source
 
 
 def get_key_step(message):
@@ -114,9 +97,23 @@ def get_key_step(message):
     with open("C:\Python_telegram_bot\Encrypted_files\ " + 'mykey.key', 'wb') as new_file:
         new_file.write(downloaded_file)
 
-    file_decrypt(file_source)
+    msg = bot.send_message(message.chat.id, "Send me file, you would like decrypt")
+    bot.register_next_step_handler(msg, get_encfile_step)
 
-    bot.send_document(message.chat.id, open(get_encfile_step(message), 'rb'))
+
+def get_encfile_step(message):
+    file_name = message.document.file_name
+    file_id = message.document.file_name
+    file_id_info = bot.get_file(message.document.file_id)
+    downloaded_file = bot.download_file(file_id_info.file_path)
+
+    src = file_name
+    print("file name is", src)
+    with open("C:\Python_telegram_bot\Encrypted_files\ " + src, 'wb') as new_file:
+        new_file.write(downloaded_file)
+
+    file_decrypt("C:\Python_telegram_bot\Encrypted_files\ " + src)
+    bot.send_document(message.chat.id, open("C:\Python_telegram_bot\Encrypted_files\ " + src, 'rb'))
 
 
 def file_decrypt(File_name):
