@@ -11,5 +11,5 @@ Files are encrypted by [cryptography library](https://pypi.org/project/cryptogra
 Here in __example__ we can see how __to encrypt__ month transactions report:
 ![encrypt file](/encdng_file.png)
 
-__Decrypt file__:
+__File decryption__:
 ![encrypt file](/dcdng_file.png)
