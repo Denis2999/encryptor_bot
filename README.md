@@ -8,8 +8,9 @@ Here in example, we can see how to encrypt and decrypt text. Also, we can see th
 
 Files are encrypted by [cryptography library](https://pypi.org/project/cryptography/). It creates decrypted file and key.
 
-Here in example we can see how to decrypt file:
-![encrypt file](/dcdng_file.png)
+Here in example we can see how to decrypt month transactions report:
+![encrypt file](/encdng_file.png)
 
 Decrypt file:
-![encrypt file](/encdng_file.png)
+![encrypt file](/dcdng_file.png)
+dcdng_file
