@@ -9,7 +9,7 @@ Example how to encrypt and decrypt text. Also, we can see that __"a" has two mat
 Files are encrypted by [cryptography library](https://pypi.org/project/cryptography/). It creates decrypted file and key.
 
 Here in __example__ we can see how __to encrypt__ month transactions report:
-![encrypt file](/encdng_file.png)
+![encrypt file](/encodng_file.png)
 
 __File decryption__:
 ![encrypt file](/dcdng_file.png)
