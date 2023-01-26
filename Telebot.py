@@ -1,7 +1,7 @@
 import telebot
 from cryptography.fernet import Fernet
 
-API_TOKEN = '1549432801:AAGWmNkchUICa8GIF64kDSCb-L7YpMeyeRg'
+API_TOKEN = 'w'
 
 bot = telebot.TeleBot(API_TOKEN)
 keyboard1 = telebot.types.ReplyKeyboardMarkup(True, True)
