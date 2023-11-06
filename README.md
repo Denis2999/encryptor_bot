@@ -1,4 +1,4 @@
-# Python_telegram_bot
+# encryptor_bot
 
 Bot is used for encrypting and decrypting files and messages. Text encrypting uses method of [Polybius square](https://en.wikipedia.org/wiki/Polybius_square) which was used in ancient Greece.
 Feature of this principle is that one letter can have two matches.
